@@ -1,0 +1,24 @@
+[project]
+name = "genericagent-local"
+version = "0.1.0"
+description = "Local GenericAgent runtime with Telegram and WeChat frontends"
+readme = "README_LOCAL.md"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+  "requests>=2.31",
+  "beautifulsoup4>=4.12",
+  "streamlit>=1.32",
+  "pywebview>=5.1",
+  "qrcode[pil]>=7.4",
+  "pycryptodome>=3.20",
+  "python-telegram-bot[http2]>=21.0",
+  "bottle>=0.12",
+  "simple-websocket-server>=0.4.4",
+]
+
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+package = false

@@ -325,7 +325,8 @@ def on_message(bot, msg):
 if __name__ == '__main__':
     try: _lock = socket.socket(socket.AF_INET, socket.SOCK_STREAM); _lock.bind(('127.0.0.1', 19528))
     except OSError: print('[WeChat] Another instance running, exiting.'); sys.exit(1)
-    _logf = open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'temp', 'wechatapp.log'), 'a', encoding='utf-8', buffering=1)
+    _default_log = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'temp', 'wechatapp.log')
+    _logf = open(os.environ.get('GA_WECHAT_LOG', _default_log), 'a', encoding='utf-8', buffering=1)
     sys.stdout = sys.stderr = _logf
     print(f'[NEW] Process starting {time.strftime("%m-%d %H:%M")}')
     bot = WxBotClient()

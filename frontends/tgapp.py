@@ -185,7 +185,8 @@ if __name__ == '__main__':
     if not ALLOWED: 
         print('[Telegram] ERROR: tg_allowed_users in mykey.py is empty or missing. Set it to avoid unauthorized access.')
         sys.exit(1)
-    _logf = open(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'temp', 'tgapp.log'), 'a', encoding='utf-8', buffering=1)
+    _default_log = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'temp', 'tgapp.log')
+    _logf = open(os.environ.get('GA_TG_LOG', _default_log), 'a', encoding='utf-8', buffering=1)
     sys.stdout = sys.stderr = _logf
     print('[NEW] New process starting, the above are history infos ...')
     threading.Thread(target=agent.run, daemon=True).start()
