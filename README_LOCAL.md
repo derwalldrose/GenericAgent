@@ -97,7 +97,7 @@ proxy = 'http://127.0.0.1:2082'
 
 ---
 
-## 4. 常驻启动 / 停止 / 状态
+## 4. 常驻启动 / 重启 / 停止 / 状态
 
 ### 启动两个前端
 
@@ -112,6 +112,18 @@ bash scripts/start-bots.sh
 - PID 写入 `temp/*.pid`
 - 日志写入 `temp/*.out.log`
 - 已在运行时不会重复启动同一个 bot
+
+### 重启两个前端
+
+```bash
+bash scripts/restart-bots.sh
+```
+
+脚本会：
+
+- 先调用 `stop-bots.sh`
+- 再调用 `start-bots.sh`
+- 最后显示当前状态
 
 ### 停止两个前端
 
@@ -211,6 +223,9 @@ uv sync
 
 # 启动
 bash scripts/start-bots.sh
+
+# 重启
+bash scripts/restart-bots.sh
 
 # 停止
 bash scripts/stop-bots.sh
