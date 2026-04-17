@@ -263,27 +263,28 @@ git remote -v
 - `origin`
 - `target`
 
-### 8.2 从 origin 拉最新，并更新本地 main
+### 8.2 从 origin 拉最新，并把本地 `main` rebase 到 `origin/main`
 
-推荐操作：
+推荐 SOP：
 
 ```bash
-git fetch origin
+git remote -v
+git fetch origin --prune
 git checkout main
 git rebase origin/main
 ```
 
-如果你当前已经在 `main`，也可以直接：
+如果你当前已经在 `main`，核心也可以简化为：
 
 ```bash
-git fetch origin
+git fetch origin --prune
 git rebase origin/main
 ```
 
 这一步的目标是：
 
-- 先拿到上游最新提交
-- 再把你本地 `main` 基于 `origin/main` 线性更新
+- 先同步并清理上游远端引用
+- 再把你本地 `main` 线性 rebase 到最新的 `origin/main`
 
 如果发生冲突，先解决冲突，再继续：
 
@@ -294,17 +295,17 @@ git rebase --continue
 
 ### 8.3 把本地状态推到 `target/main`
 
-普通情况下：
+如果你刚做过 `rebase origin/main`，默认按下面这条推送：
 
 ```bash
-git push target main
+git push --force-with-lease target main
 ```
 
 ### 8.4 什么时候普通 push，什么时候用 `--force-with-lease`
 
-#### 可以普通 push 的情况
+#### 普通 push
 
-当你的本地 `main` 只是新增提交、没有改写提交历史时，用普通推送：
+当你的本地 `main` 只是新增提交、**没有改写历史** 时，可以直接：
 
 ```bash
 git push target main
@@ -312,19 +313,33 @@ git push target main
 
 典型场景：
 
-- 你只是新提交了几个 commit
-- 没有做 rebase / amend / reset / squash 等改写历史操作
+- 你只是追加了新的 commit
+- 没有做 `rebase` / `amend` / `reset` / squash
 
-#### 需要 `--force-with-lease` 的情况
+#### `--force-with-lease`
 
-如果你执行过这些会改写历史的操作：
+当你执行过这些会改写历史的操作后：
 
 - `git rebase ...`
 - `git commit --amend`
 - `git reset --hard/--soft ...`
 - squash / 手动改写历史
 
-那么推到 `target/main` 时，可能需要：
+推送到 `target/main` 时应使用：
+
+```bash
+git push --force-with-lease target main
+```
+
+尤其这次 SOP 场景里，如果你是先：
+
+```bash
+git fetch origin --prune
+git checkout main
+git rebase origin/main
+```
+
+那么后续推到 `target/main`，就按：
 
 ```bash
 git push --force-with-lease target main
@@ -332,9 +347,9 @@ git push --force-with-lease target main
 
 注意：
 
-- **只在确实因为 rebase 或历史改写导致普通 push 被拒时使用**
 - 不要直接用 `--force`
 - 优先用更安全的 `--force-with-lease`
+- 推之前最好先 `git status --short` 看一眼，确认没有把无关文件带进去
 
 ### 8.5 Secret 不入库提醒
 
@@ -376,7 +391,9 @@ tail -f temp/wechatapp.out.log
 tail -f temp/tgapp.out.log
 
 # 同步上游并推送到 target
-git fetch origin
+git remote -v
+git fetch origin --prune
+git checkout main
 git rebase origin/main
-git push target main
+git push --force-with-lease target main
 ```
